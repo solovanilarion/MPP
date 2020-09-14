@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+     http://www.springframework.org/schema/util  http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+
+    <util:properties id="jdbcProps" location="classpath:server.properties"/>
+
+    <bean id="repoPers" class="concurs.repository.PersoanaOficialaRepository">
+        <constructor-arg ref="jdbcProps"/>
+    </bean>
+    <bean id="repoProba" class="concurs.repository.ProbaRepository">
+        <constructor-arg ref="jdbcProps"/>
+    </bean>
+    <bean id="repoCopil" class="concurs.repository.CopilRepository">
+        <constructor-arg ref="jdbcProps"/>
+    </bean>
+    <bean id="repoInscriere" class="concurs.repository.InscriereRepository">
+        <constructor-arg ref="jdbcProps"/>
+    </bean>
+
+    <bean id="service" class="concurs.server.ServerImpl">
+        <constructor-arg ref="repoPers"/>
+        <constructor-arg ref="repoProba"/>
+        <constructor-arg ref="repoInscriere"/>
+        <constructor-arg ref="repoCopil"/>
+    </bean>
+
+    <bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+        <property name="serviceName" value="Concurs"/>
+        <property name="service" ref="service"/>
+        <property name="serviceInterface" value="concurs.services.IServer"/>
+        <property name="servicePort" value="1099"/>
+    </bean>
+
+</beans>
